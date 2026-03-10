@@ -78,6 +78,7 @@ const translations: Record<string, Record<Language, string>> = {
   // Brands
   "brands.label": { en: "Trusted Partners", es: "Socios de Confianza" },
   "brands.title": { en: "Brands I've Worked With", es: "Marcas con las que He Trabajado" },
+  "brands.subtitle": { en: "Proud to collaborate with these amazing brands", es: "Orgullosa de colaborar con estas increíbles marcas" },
   
   // Work
   "work.label": { en: "Visual Stories", es: "Historias Visuales" },
