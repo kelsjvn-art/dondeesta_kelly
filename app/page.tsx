@@ -10,7 +10,7 @@ import Image from "next/image"
 // All images organized by section - each image used only once
 // DO NOT MODIFY HERO IMAGE - This is the final cinematic hero
 const images = {
-  hero: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM-2VaPYPKkAZ1fkmT01rmCf4BQnXrfOn.jpeg",
+  hero: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%285%29-joDqTlb1hMntUgSATatqXkDsK6gQFH.jpeg",
   
   destinations: [
     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.49.18%20PM-jcpuOD6FyOFTkwRPoGf8vAicaeEfM2.jpeg",
