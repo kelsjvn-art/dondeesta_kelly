@@ -8,8 +8,9 @@ import { MapPin, Mail, Instagram } from "lucide-react"
 import Image from "next/image"
 
 // All images organized by section - each image used only once
+// DO NOT MODIFY HERO IMAGE - This is the final cinematic hero
 const images = {
-  hero: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.36%20PM%20%281%29-QW69cisohjuFGL5msmvjg4NAp1EBTC.jpeg",
+  hero: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM-2VaPYPKkAZ1fkmT01rmCf4BQnXrfOn.jpeg",
   
   destinations: [
     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.49.18%20PM-jcpuOD6FyOFTkwRPoGf8vAicaeEfM2.jpeg",
@@ -98,7 +99,7 @@ function PageContent() {
     <main className="min-h-screen">
       <Navigation />
 
-      {/* Hero Section */}
+      {/* ====== HERO SECTION - DO NOT MODIFY ====== */}
       <section id="home" className="relative h-screen overflow-hidden">
         <Image
           src={images.hero}
@@ -122,6 +123,7 @@ function PageContent() {
           </div>
         </div>
       </section>
+      {/* ====== END HERO SECTION - DO NOT MODIFY ====== */}
 
       {/* About Section */}
       <section id="about" className="py-20 md:py-28 px-6 bg-background">
