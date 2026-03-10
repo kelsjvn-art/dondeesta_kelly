@@ -1,124 +1,225 @@
+"use client"
+
 import { CollaborationCard } from "@/components/collaboration-card"
-import { ImageGallery } from "@/components/image-gallery"
+import { Navigation } from "@/components/navigation"
+import { BrandsSection } from "@/components/brands-section"
+import { LanguageProvider, useLanguage } from "@/lib/language-context"
 import { MapPin, Mail, Instagram } from "lucide-react"
 import Image from "next/image"
 
-const collaborationCategories = [
-  {
-    title: "Destinations & Tourism",
-    description: "Storytelling content designed to showcase destinations through cinematic travel experiences. Ideal for tourism boards and destination marketing organizations.",
-    images: [
+// All images organized by section - each image used only once
+// DO NOT MODIFY HERO IMAGE - This is the final cinematic hero
+const images = {
+  hero: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM-2VaPYPKkAZ1fkmT01rmCf4BQnXrfOn.jpeg",
+  
+  destinations: [
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.49.18%20PM-jcpuOD6FyOFTkwRPoGf8vAicaeEfM2.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.49.18%20PM%20%281%29-uoHjD1f6QPUI7pUC8J9kyOqPJf8UQZ.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.49.18%20PM%20%282%29-60ViGymXfInQnf4gAyl7Bu2zVvGS7f.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.17%20PM-jYjm9nfX0k1pWna3kui64Jtin4v4cT.jpeg",
+  ],
+  
+  upcoming: [
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%283%29-1GpfoUEhcMY7JpvN4Zu6grmGdG4tTD.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM-sMmFlNsVlGlUxnn90Ub6lWdEInfuf0.jpeg",
+  ],
+  
+  collaborations: {
+    destinations: [
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%281%29-FAp60OqYjBfy7ywwwwvjplLtbnDFyO.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%283%29-9ZF7U5w36Y9dGWiW1c0crOUgytox2Y.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%285%29-NLxz71Xty93uQ3NBAV0Eu9U80TxTox.jpeg",
     ],
-  },
-  {
-    title: "Hotels & Unique Stays",
-    description: "Content focused on the experience of staying in unique properties such as boutique hotels, lodges, eco-hotels and glamping locations.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM-2VaPYPKkAZ1fkmT01rmCf4BQnXrfOn.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%288%29-oqMotvym0aN6hFtzQX9E3PMVrkjBTs.jpeg",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%285%29-VlBZNjuP0SjMCcLgCjXK6WCW2QAazO.jpeg",
+    hotels: [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%287%29-sMlFUahkJDd46401ci6krED3vJuwBg.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%285%29-yl55TvAn7kAu1grim54qCbAK5HFcHw.jpeg",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%288%29-ELBoeQc3kKJD8EOEwzFi8CBOh4YKPF.jpeg",
     ],
-  },
-  {
-    title: "Travel Brands",
-    description: "Collaborations with brands that are part of the travel experience, including outdoor gear, travel equipment, technology and adventure brands.",
-    images: [
+    brands: [
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%284%29-Y74B2Q7EWnbLu4djfFGf23l51UKAcL.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%286%29-GJeXJ3dmIO95EEGjVLcSjUniY2Nj4K.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.39%20PM-aNk8LfiUCDkxI3sZR8x3WDn1AlEcxh.jpeg",
     ],
-  },
-  {
-    title: "Travel Platforms & Experiences",
-    description: "Creation of storytelling content around guided experiences, tours and local activities offered by travel platforms like Expedia, GetYourGuide, and Steller.",
-    images: [
+    platforms: [
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%282%29-EC9axtoz2yd0oFarhwUqGT9PZhZDrm.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%287%29-JDWboiM7QDR2cC5o76Tf9DecwS77rS.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%286%29-19178IDcriyh0GyLNRCYd5N7l7H8e3.jpeg",
     ],
-  },
-  {
-    title: "Airlines & Transportation",
-    description: "Collaborations with airlines and transportation companies to document travel routes and the experience of reaching unique destinations.",
-    images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%282%29-FNS9qBm6L9vsC2DlgtF76x0qTXC9uv.jpeg",
+    airlines: [
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.36%20PM%20%283%29-rQybA30kww7rH0DgmO1YpBdQVGcmK6.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%287%29-S3sVkibahlm1h4cfStqJWd2ioI4WuW.jpeg",
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.39%20PM%20%281%29-8AFp0paFxVL0i0nMZRP6Pn8KQaAKst.jpeg",
     ],
   },
-]
+  
+  work: [
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.35%20PM-81K1wIOrLsbeVMG2pxa15ZSO7rQaDG.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%282%29-AHPadw12QlXZvgJfyZX6UoMbtj8Q4B.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%281%29-0JsCT89YIn4isJo9Fw4CAG87hsBOdU.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.36%20PM%20%282%29-zP56ymNQy8tL99LxCsmvBYmDqKWgXr.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.36%20PM-YWyC6xTygFvYggBaJgMoPN0ZCtdkNm.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.45.18%20PM%20%286%29-gMClhkYPOwgK5ZbUC3lXQirBijCiYV.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM-E14XHgN3s2pXwnLKi8ulSIv0zVzVYT.jpeg",
+    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%281%29-bqD2MU0XiNPi9jETk1ErjGcI5E8vZa.jpeg",
+  ],
+}
 
-const galleryImages = [
-  { src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%288%29-oefY7c507vHo6hNfdiou3PDn54VTJx.jpeg", alt: "Aerial pool view" },
-  { src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%283%29-tCDl8KoYWUm9fB5OIkMJs9xGnHeFKF.jpeg", alt: "Couple in hotel bathroom" },
-  { src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%289%29-gZJYdbbrz5dK9bGA8zLHOSQXwroSdu.jpeg", alt: "Pool from above" },
-  { src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%287%29-JDWboiM7QDR2cC5o76Tf9DecwS77rS.jpeg", alt: "Floating in pool" },
-  { src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%285%29-NLxz71Xty93uQ3NBAV0Eu9U80TxTox.jpeg", alt: "Infinity pool sunset" },
-]
+function PageContent() {
+  const { t } = useLanguage()
 
-export default function CollaborationPage() {
+  const collaborationCategories = [
+    {
+      titleKey: "category.destinations.title",
+      descriptionKey: "category.destinations.description",
+      images: images.collaborations.destinations,
+    },
+    {
+      titleKey: "category.hotels.title",
+      descriptionKey: "category.hotels.description",
+      images: images.collaborations.hotels,
+    },
+    {
+      titleKey: "category.brands.title",
+      descriptionKey: "category.brands.description",
+      images: images.collaborations.brands,
+    },
+    {
+      titleKey: "category.platforms.title",
+      descriptionKey: "category.platforms.description",
+      images: images.collaborations.platforms,
+    },
+    {
+      titleKey: "category.airlines.title",
+      descriptionKey: "category.airlines.description",
+      images: images.collaborations.airlines,
+    },
+  ]
+
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+      <Navigation />
+
+      {/* ====== HERO SECTION - DO NOT MODIFY ====== */}
+      <section id="home" className="relative h-screen overflow-hidden">
         <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%285%29-NLxz71Xty93uQ3NBAV0Eu9U80TxTox.jpeg"
+          src={images.hero}
           alt="Kelly Vega - Travel Storyteller"
           fill
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/30 via-foreground/20 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/40 via-foreground/20 to-background" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <p className="text-white/90 text-sm md:text-base tracking-[0.3em] uppercase mb-4">
-            Travel Storyteller & Photographer
+            {t("hero.subtitle")}
           </p>
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-medium text-white tracking-tight text-balance max-w-4xl">
-            Collaboration Opportunities
+            {t("hero.title")}
           </h1>
         </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
+            <div className="w-1 h-2 bg-white/70 rounded-full" />
+          </div>
+        </div>
       </section>
+      {/* ====== END HERO SECTION - DO NOT MODIFY ====== */}
 
-      {/* Intro Section */}
-      <section className="py-16 md:py-24 px-6">
+      {/* About Section */}
+      <section id="about" className="py-20 md:py-28 px-6 bg-background">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground mb-6 tracking-tight">
-            {"Let's Create Together"}
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground mb-8 tracking-tight">
+            {t("about.title")}
           </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            I collaborate with brands, destinations and travel platforms to create authentic visual stories that inspire people to explore the world. Each partnership is approached with intention, creativity, and a focus on meaningful storytelling.
+          <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
+            {t("about.description")}
           </p>
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section className="px-6 pb-16 md:pb-24">
-        <div className="max-w-7xl mx-auto">
-          <ImageGallery images={galleryImages} />
-        </div>
-      </section>
-
-      {/* Collaboration Categories */}
-      <section className="py-16 md:py-24 px-6 bg-secondary/50">
+      {/* Destinations Section */}
+      <section id="destinations" className="py-20 md:py-28 px-6 bg-secondary/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <p className="text-primary text-sm tracking-[0.2em] uppercase mb-3">
-              Partnership Types
+              {t("destinations.label")}
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
-              Ways to Work Together
+              {t("destinations.title")}
             </h2>
           </div>
-          
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {images.destinations.map((src, index) => (
+              <div
+                key={index}
+                className="relative aspect-[3/4] overflow-hidden rounded-2xl group"
+              >
+                <Image
+                  src={src}
+                  alt={`Destination ${index + 1}`}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Upcoming Travel Section */}
+      <section id="upcoming" className="py-20 md:py-28 px-6 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <p className="text-primary text-sm tracking-[0.2em] uppercase mb-3">
+                {t("upcoming.label")}
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground tracking-tight mb-6">
+                {t("upcoming.title")}
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                {t("upcoming.description")}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {images.upcoming.map((src, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-[3/4] overflow-hidden rounded-2xl group"
+                >
+                  <Image
+                    src={src}
+                    alt={`Upcoming travel ${index + 1}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Collaboration Categories Section */}
+      <section id="collaborations" className="py-20 md:py-28 px-6 bg-secondary/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-16">
+            <p className="text-primary text-sm tracking-[0.2em] uppercase mb-3">
+              {t("collaborations.label")}
+            </p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
+              {t("collaborations.title")}
+            </h2>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {collaborationCategories.map((category, index) => (
               <CollaborationCard
                 key={index}
-                title={category.title}
-                description={category.description}
+                title={t(category.titleKey)}
+                description={t(category.descriptionKey)}
                 images={category.images}
                 className={index === 0 ? "md:col-span-2 lg:col-span-1" : ""}
               />
@@ -127,26 +228,27 @@ export default function CollaborationPage() {
         </div>
       </section>
 
-      {/* Featured Work */}
-      <section className="py-16 md:py-24 px-6">
+      {/* Brands Section */}
+      <BrandsSection />
+
+      {/* Recent Work Section */}
+      <section id="work" className="py-20 md:py-28 px-6 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <p className="text-primary text-sm tracking-[0.2em] uppercase mb-3">
-              Visual Stories
+              {t("work.label")}
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
-              Recent Work
+              {t("work.title")}
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {[
-              "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%288%29-oqMotvym0aN6hFtzQX9E3PMVrkjBTs.jpeg",
-              "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%282%29-EC9axtoz2yd0oFarhwUqGT9PZhZDrm.jpeg",
-              "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.38%20PM%20%286%29-GJeXJ3dmIO95EEGjVLcSjUniY2Nj4K.jpeg",
-              "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-03-10%20at%202.19.37%20PM%20%286%29-19178IDcriyh0GyLNRCYd5N7l7H8e3.jpeg",
-            ].map((src, index) => (
-              <div key={index} className="relative aspect-[3/4] overflow-hidden rounded-xl group">
+            {images.work.map((src, index) => (
+              <div
+                key={index}
+                className="relative aspect-[3/4] overflow-hidden rounded-xl group"
+              >
                 <Image
                   src={src}
                   alt={`Recent work ${index + 1}`}
@@ -161,42 +263,54 @@ export default function CollaborationPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 md:py-24 px-6 bg-foreground text-primary-foreground">
+      <section id="contact" className="py-20 md:py-28 px-6 bg-foreground text-primary-foreground">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium mb-6 tracking-tight">
-            {"Let's Create Something Meaningful"}
+            {t("contact.title")}
           </h2>
-          <p className="text-primary-foreground/80 text-lg mb-10 leading-relaxed">
-            If you&apos;re interested in collaborating on travel stories, destination campaigns or visual content projects, I would love to connect.
+          <p className="text-primary-foreground/80 text-lg md:text-xl mb-12 leading-relaxed">
+            {t("contact.description")}
           </p>
-          
+
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
-            <a 
+            <a
               href="mailto:Dondeestakelly@gmail.com"
-              className="flex items-center gap-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
+              className="flex items-center gap-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors group"
             >
-              <Mail className="w-5 h-5" />
+              <div className="p-3 rounded-full bg-primary-foreground/10 group-hover:bg-primary-foreground/20 transition-colors">
+                <Mail className="w-5 h-5" />
+              </div>
               <span>Dondeestakelly@gmail.com</span>
             </a>
-            <a 
+            <a
               href="https://instagram.com/dondeesta_kelly"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
+              className="flex items-center gap-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors group"
             >
-              <Instagram className="w-5 h-5" />
+              <div className="p-3 rounded-full bg-primary-foreground/10 group-hover:bg-primary-foreground/20 transition-colors">
+                <Instagram className="w-5 h-5" />
+              </div>
               <span>@dondeesta_kelly</span>
             </a>
           </div>
-          
-          <div className="mt-12 pt-8 border-t border-primary-foreground/20">
+
+          <div className="mt-16 pt-8 border-t border-primary-foreground/20">
             <div className="flex items-center justify-center gap-2 text-primary-foreground/60 text-sm">
               <MapPin className="w-4 h-4" />
-              <span>Kelly Vega • Travel Content Director & Photographer</span>
+              <span>{t("contact.footer")}</span>
             </div>
           </div>
         </div>
       </section>
     </main>
+  )
+}
+
+export default function CollaborationPage() {
+  return (
+    <LanguageProvider>
+      <PageContent />
+    </LanguageProvider>
   )
 }
